@@ -36,3 +36,7 @@ services:
       - "traefik.http.routers.webservice.service=webservice@docker"
       - "traefik.http.services.webservice.loadbalancer.server.port=8081"
   
+  redis:
+    image: redis:5.0.6
+    ports:
+      - '6379:6379'
