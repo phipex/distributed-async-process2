@@ -27,6 +27,9 @@ services:
 
   webservice:
     image: phipex/webservice:0.0.1-SNAPSHOT
+    environment:
+      - _JAVA_OPTIONS=-Xmx1024m -Xms512m
+      - SPRING_PROFILES_ACTIVE=prod
  #   ports:
  #     - "8081:80"
     labels:
