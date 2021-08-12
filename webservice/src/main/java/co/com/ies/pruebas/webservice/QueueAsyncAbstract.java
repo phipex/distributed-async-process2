@@ -1,15 +1,15 @@
 package co.com.ies.pruebas.webservice;
 
-import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 public abstract class QueueAsyncAbstract<TasckType> {
 
     protected abstract void offer(TasckType element);
     protected abstract void publishNewElementsAdded();
-    protected abstract Queue<TasckType> getQueue();
+    protected abstract Set<TasckType> getQueue();
     protected abstract void processElement(TasckType element);
 
     public void offerTascks(List<TasckType> elements){
@@ -27,7 +27,7 @@ public abstract class QueueAsyncAbstract<TasckType> {
     }
 
     public void processQueue(){
-        Queue<TasckType> elements = getQueue();
+        Set<TasckType> elements = getQueue();
         System.out.println("QueueAsyncAbstract.processQueue elements = " + elements);
         System.out.println("QueueAsyncAbstract.processQueue elements = " + elements.size());
         // use un iterator en eves del for y un poll por que me quedaban completas las tareas

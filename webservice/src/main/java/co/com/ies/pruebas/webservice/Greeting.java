@@ -1,11 +1,12 @@
 package co.com.ies.pruebas.webservice;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "task")
-public class Greeting {
+public class Greeting implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
