@@ -2,27 +2,43 @@ package co.com.ies.pruebas.webservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.com.ies.pruebas.webservice.redis.ServiceProcessQeueu;
+import co.com.ies.pruebas.webservice.redis.ServiceProcess;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.SecureRandom;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class GreetingController {
 
     private static final String template = "Hello Docker, %s!";
-    private final AtomicLong counter = new AtomicLong();
+
+    private final String hostAddress;
+
 
     @Autowired
     @Qualifier("remoteProcessQeueu")
-    private ServiceProcessQeueu serviceProcessQeueu;
+    private ServiceProcess serviceProcessQeueu;
+
+    private final GreetingRepository greetingRepository;
+
+    public GreetingController(GreetingRepository greetingRepository) {
+        String hostAddress1;
+        this.greetingRepository = greetingRepository;
+        try {
+            hostAddress1 = InetAddress.getLocalHost().getHostAddress() ;
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            hostAddress1 = "no found";
+        }
+        this.hostAddress = hostAddress1;
+    }
 
     @GetMapping("/greeting")
     public Greeting greeting(@RequestParam(value="name",
@@ -32,22 +48,27 @@ public class GreetingController {
             Thread.sleep(1000);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
-        }    
-        
-        String format = String.format(template, name);
-        String ip = "No found";
-
-        // Local address
-        try {
-            String hostAddress = InetAddress.getLocalHost().getHostAddress() ;
-            String hostName = InetAddress.getLocalHost().getHostName();
-            ip = hostAddress;
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
         }
 
-        return new Greeting(counter.incrementAndGet(),
-                format, ip);
+        return getGreeting(name);
+    }
+
+    private Greeting getGreeting(String name) {
+        String format = String.format(template, name);
+        return new Greeting(format, hostAddress);
+    }
+
+    @GetMapping("/greeting/new")
+    public ResponseEntity<Greeting> createGreeting(){
+        //var that = this;
+        //System.out.println("that = " + that);
+        Random random = new SecureRandom();
+        int ran = random.nextInt();
+
+        final Greeting nuevo = getGreeting("Nuevo" + ran);
+        greetingRepository.save(nuevo);
+        serviceProcessQeueu.process();
+        return ResponseEntity.ok(nuevo);
     }
 
     @GetMapping("/servicio")
@@ -60,7 +81,7 @@ public class GreetingController {
             String hostAddress = InetAddress.getLocalHost().getHostAddress();
             resultado = resultado + hostAddress + " ran = " + ran;
             System.out.println(resultado);
-            serviceProcessQeueu.processQeueu(ran);    
+            serviceProcessQeueu.process();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,6 @@
 package co.com.ies.pruebas.webservice;
 
-import co.com.ies.pruebas.webservice.redis.ServiceProcessQeueu;
+import co.com.ies.pruebas.webservice.redis.ServiceProcess;
 import org.redisson.Redisson;
 import org.redisson.api.*;
 import org.redisson.config.Config;
@@ -13,23 +13,25 @@ import org.springframework.core.env.Environment;
 @Configuration
 public class RedisConfig {
 
+    public static final String REMOTE_PROCESS_QUEUE = "remoteProcessQeueu";
+
     @Autowired
     private Environment environment;
 
     @Autowired
-    private ServiceProcessQeueu serviceProcessQeueu;
+    private ServiceProcess serviceProcessQeueu;
 
     @Bean
     public void registryRedisService(){
         RRemoteService remoteService = getRedisClient().getRemoteService();
-        remoteService.register(ServiceProcessQeueu.class, serviceProcessQeueu);
+        remoteService.register(ServiceProcess.class, serviceProcessQeueu);
     }
 
     @Bean
-    @Qualifier("remoteProcessQeueu")
-    public ServiceProcessQeueu getRemoteProcessQeueu(){
+    @Qualifier(REMOTE_PROCESS_QUEUE)
+    public ServiceProcess getRemoteProcessQeueu(){
         RRemoteService remoteService = getRedisClient().getRemoteService();
-        return remoteService.get(ServiceProcessQeueu.class);
+        return remoteService.get(ServiceProcess.class);
 
     }
 

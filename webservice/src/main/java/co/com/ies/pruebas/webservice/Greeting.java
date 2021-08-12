@@ -1,18 +1,31 @@
 package co.com.ies.pruebas.webservice;
 
+import javax.persistence.*;
+import java.util.Objects;
+
+@Entity
+@Table(name = "task")
 public class Greeting {
 
-    private final long id;
-    private final String content;
-    private final String ip;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
+    private Long id;
+    private String content;
+    private String ip;
 
-    public Greeting(long id, String content, String ip) {
-        this.id = id;
+
+
+    private String ipTramited;
+
+    public Greeting(){}
+
+    public Greeting(String content, String ip) {
         this.content = content;
         this.ip = ip;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -22,5 +35,40 @@ public class Greeting {
 
     public String getIp(){
         return ip;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getIpTramited() {
+        return ipTramited;
+    }
+
+    public void setIpTramited(String ipTramited) {
+        this.ipTramited = ipTramited;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Greeting greeting = (Greeting) o;
+        return Objects.equals(id, greeting.id) && Objects.equals(content, greeting.content) && Objects.equals(ip, greeting.ip) && Objects.equals(ipTramited, greeting.ipTramited);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, content, ip, ipTramited);
+    }
+
+    @Override
+    public String toString() {
+        return "Greeting{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", ip='" + ip + '\'' +
+                ", ipTramited='" + ipTramited + '\'' +
+                '}';
     }
 }

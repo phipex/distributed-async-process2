@@ -30,6 +30,7 @@ services:
     environment:
       - _JAVA_OPTIONS=-Xmx1024m -Xms512m
       - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
  #   ports:
  #     - "8081:80"
     labels:
@@ -43,3 +44,12 @@ services:
     image: redis:5.0.6
     ports:
       - '6379:6379'
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    ports:
+      - 5432:5432
