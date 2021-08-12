@@ -21,8 +21,8 @@ public class ServiceProcessImpl implements ServiceProcess {
     }
 
     @Async
-    @Override
-    public void process() {
+    @Deprecated
+    public void process2() {
         System.out.println("ServiceProcessQeueuImpl.processQeueu");
         try {
             String hostAddress = InetAddress.getLocalHost().getHostAddress();
@@ -52,6 +52,16 @@ public class ServiceProcessImpl implements ServiceProcess {
             e.printStackTrace();
         }
         
+    }
+
+    @Async
+    @Override
+    public void process() {
+        final List<Greeting> greetingsByIpTramitedIsNull = greetingRepository.getGreetingsByIpTramitedIsNull();
+
+        qeueuAsyncRedis.offerTascks(greetingsByIpTramitedIsNull);
+        final int size = greetingsByIpTramitedIsNull.size();
+        System.out.println("size = " + size);
     }
 
     @Async
